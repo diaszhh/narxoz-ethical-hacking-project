@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ethical hacking</title>
+</head>
+<body>
+<h1>Hello</h1>
+
+<p th:text="${message}">ASD</p>
+
+<hr>
+
+<form th:action="@{/hello}" method="post">
+    <label for="nameInput">Name:</label>
+
+    <input type="text" id="nameInput" name="userName" required>
+
+    <button type="submit">Send</button>
+</form>
+</body>
+</html>
