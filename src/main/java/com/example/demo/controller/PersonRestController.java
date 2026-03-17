@@ -12,7 +12,7 @@ public class PersonRestController {
 
     private final DBManager db = new DBManager();
 
-    @GetMapping 
+    @GetMapping
     public List<Person> all() {
         return db.getAllPersons();
     }
@@ -51,4 +51,73 @@ public class PersonRestController {
     public Person createSafe(@RequestBody Person person) {
         return db.createPersonSafe(person);
     }
+
+    @GetMapping("/search-like-vuln")
+    public List<Person> searchLikeVuln(@RequestParam String name) {
+        return db.findByNameLikeVulnerable(name);
+    }
+
+    @GetMapping("/search-like-safe")
+    public List<Person> searchLikeSafe(@RequestParam String name) {
+        return db.findByNameLikeSafe(name);
+    }
+
+    @GetMapping("/by-id-vuln")
+    public Person getByIdVuln(@RequestParam String id) {
+        return db.findByIdVulnerable(id);
+    }
+
+    @GetMapping("/by-id-safe")
+    public Person getByIdSafe(@RequestParam Long id) {
+        return db.findByIdSafe(id);
+    }
+
+    @PutMapping("/update-vuln/{id}")
+    public Person updateVuln(@PathVariable String id, @RequestBody Person person) {
+        return db.updatePersonVulnerable(id, person);
+    }
+
+    @PutMapping("/update-safe/{id}")
+    public Person updateSafe(@PathVariable Long id, @RequestBody Person person) {
+        return db.updatePersonSafe(id, person);
+    }
+
+    @DeleteMapping("/delete-vuln/{id}")
+    public String deleteVuln(@PathVariable String id) {
+        db.deletePersonVulnerable(id);
+        return "Deleted vulnerable";
+    }
+
+    @DeleteMapping("/delete-safe/{id}")
+    public String deleteSafe(@PathVariable Long id) {
+        db.deletePersonSafe(id);
+        return "Deleted safe";
+    }
+
+    // Уязвимая авторизация
+// GET /api/persons/login-vuln?name=...&password=...
+    @GetMapping("/login-vuln")
+    public String loginVuln(@RequestParam String name, @RequestParam String password) {
+        Person person = db.loginVulnerable(name, password);
+
+        if (person != null) {
+            return "Login success (vulnerable): " + person.getName();
+        }
+
+        return "Invalid credentials";
+    }
+
+    // Безопасная авторизация
+// GET /api/persons/login-safe?name=...&password=...
+    @GetMapping("/login-safe")
+    public String loginSafe(@RequestParam String name, @RequestParam String password) {
+        Person person = db.loginSafe(name, password);
+
+        if (person != null) {
+            return "Login success (safe): " + person.getName();
+        }
+
+        return "Invalid credentials";
+    }
+
 }
